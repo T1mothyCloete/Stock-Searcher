@@ -1,12 +1,22 @@
-import requests
-from bs4 import BeautifulSoup
+def getData(symbol):
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'}
+        url = f'https://finance.yahoo.com/quote/{symbol}'
+        r = requests.get(url, headers=headers)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        stock = {
+            'symbol': symbol,
+            'price' : soup.find('div', {'class': 'D(ib) Mend(20px)'}).find_all('fin-streamer')[0].text,
+            'change' : soup.find('div', {'class': 'D(ib) Mend(20px)'}).find_all('fin-streamer')[1].text
+    }
+    except:
+        return("Invalid Symbol")
+    else:
+        return stock
 
-URL = 'https://levelupstore.co.za/products/viticulture-essential-edition?variant=43344257417445&currency=ZAR&utm_medium=product_sync&utm_source=google&utm_content=sag_organic&utm_campaign=sag_organic&gclid=CjwKCAjwgZCoBhBnEiwAz35RwrvzMipDM-I63TBeGhuilANUZb6_Zgbjwcm-Wqf5zn9ThXRxgxxbtRoC_HoQAvD_BwE'
+#print("Enter stock symbol")
+symbol = input("Enter stock symbol: ")
+print(getData(symbol))
 
-headers = {"User_Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}
-
-page = requests.get(URL, headers=headers)
-
-soup = BeautifulSoup(page.content, 'html.parser')
 
 
